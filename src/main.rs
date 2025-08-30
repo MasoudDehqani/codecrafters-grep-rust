@@ -2,9 +2,23 @@ use std::env;
 use std::io;
 use std::process;
 
+fn match_digits_character_class(input_line: &str) -> bool {
+    match input_line.parse::<i32>() {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
+fn match_words_character_class(input_line: &str) -> bool {
+    input_line
+        .chars()
+        .all(|ch| ch.is_alphanumeric() || ch == '_')
+}
+
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
-    match (pattern == "\\d", input_line.parse::<i32>()) {
-        (true, Ok(_)) => true,
+    match pattern {
+        "\\d" => match_digits_character_class(input_line),
+        "\\w" => match_words_character_class(input_line),
         _ => input_line.contains(pattern),
     }
 }
