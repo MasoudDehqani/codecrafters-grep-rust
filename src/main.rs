@@ -12,10 +12,11 @@ fn match_digits_character_class(input_line: &str) -> bool {
 fn match_words_character_class(input_line: &str) -> bool {
     input_line
         .chars()
-        .all(|ch| ch.is_alphanumeric() || ch == '_')
+        .any(|ch| ch.is_alphanumeric() || ch == '_')
 }
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
+    println!("{}", input_line);
     match pattern {
         "\\d" => match_digits_character_class(input_line),
         "\\w" => match_words_character_class(input_line),
