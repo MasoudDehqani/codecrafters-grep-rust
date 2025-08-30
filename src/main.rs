@@ -44,7 +44,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
     input_line.char_indices().fold(false, |_acc, (i, _ch)| {
         let slice = &input_line[i..input_line.len()];
 
-        let res = patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
+        let res = patterns.iter().enumerate().fold(false, |acc, (i, curr)| {
             let g = slice.chars().collect::<Vec<char>>();
             let maybe_proportional_char = g.get(i);
             let pp = maybe_proportional_char.unwrap_or(&' ');
@@ -73,7 +73,8 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
                         res
                     }
                 },
-                None => true,
+
+                None => acc,
             }
         });
 
