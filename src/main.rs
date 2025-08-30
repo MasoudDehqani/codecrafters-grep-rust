@@ -3,13 +3,9 @@ use std::io;
 use std::process;
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
-    if pattern == "\\d" {
-        match input_line.parse::<i32>() {
-            Ok(_) => true,
-            Err(_) => false,
-        }
-    } else {
-        input_line.contains(pattern)
+    match (pattern == "\\d", input_line.parse::<i32>()) {
+        (true, Ok(_)) => true,
+        _ => input_line.contains(pattern),
     }
 }
 
