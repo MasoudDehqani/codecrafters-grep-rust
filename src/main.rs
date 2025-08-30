@@ -1,7 +1,6 @@
 use std::env;
 use std::io;
 use std::process;
-use std::str::pattern::Pattern;
 
 fn match_digits_character_class(input_line: &str) -> bool {
     match input_line.parse::<i32>() {
