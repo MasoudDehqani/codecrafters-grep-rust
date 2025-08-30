@@ -73,7 +73,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
                 vec![acc, vec![test]].concat()
             }
             "\\w" => {
-                let test = ch.is_alphanumeric();
+                let test = ch.is_alphanumeric() || ch == '_';
                 vec![acc, vec![test]].concat()
             }
             _ => {
