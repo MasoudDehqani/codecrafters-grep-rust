@@ -15,15 +15,25 @@ use std::process;
 //         .any(|ch| ch.is_alphanumeric() || ch == '_')
 // }
 
-// fn match_positive_character_group(input_line: &str, p: &str) -> bool {
-//     p.chars().any(|ch| input_line.contains(ch))
-// }
+fn match_positive_character_group(input_line: &str, p: &str) -> bool {
+    p.chars().any(|ch| input_line.contains(ch))
+}
 
-// fn match_negative_character_group(input_line: &str, p: &str) -> bool {
-//     p.chars().any(|ch| !input_line.contains(ch))
-// }
+fn match_negative_character_group(input_line: &str, p: &str) -> bool {
+    p.chars().any(|ch| !input_line.contains(ch))
+}
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
+    match &pattern {
+        &p if p.starts_with("[^") && p.ends_with("]") => {
+            return match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+        }
+        &p if p.starts_with("[") && p.ends_with("]") => {
+            return match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+        }
+        _ => (),
+    }
+
     let mut patterns: Vec<String> = Vec::new();
 
     let mut is_adding_character_class = false;
@@ -56,17 +66,19 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
 
         let z = i1.zip(i2);
 
-        let r = z.fold(vec![], |acc, (ch, p)| {
-            match p.as_str() {
-                "\\d" => vec![acc, vec![ch.is_digit(10)]].concat(),
-                "\\w" => vec![acc, vec![ch.is_alphanumeric()]].concat(),
-                // p if p.starts_with("[^") && p.ends_with("]") => {
-                //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
-                // }
-                // p if p.starts_with("[") && p.ends_with("]") => {
-                //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-                // }
-                _ => vec![acc, vec![ch.to_string() == *p]].concat(),
+        let r = z.fold(vec![], |acc, (ch, p)| match p.as_str() {
+            "\\d" => {
+                let test = ch.is_digit(10);
+
+                vec![acc, vec![test]].concat()
+            }
+            "\\w" => {
+                let test = ch.is_alphanumeric();
+                vec![acc, vec![test]].concat()
+            }
+            _ => {
+                let test = ch.to_string() == *p;
+                vec![acc, vec![test]].concat()
             }
         });
 
