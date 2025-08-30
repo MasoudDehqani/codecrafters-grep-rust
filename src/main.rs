@@ -1,6 +1,7 @@
 use std::env;
 use std::io;
 use std::process;
+use std::str::pattern::Pattern;
 
 fn match_digits_character_class(input_line: &str) -> bool {
     match input_line.parse::<i32>() {
@@ -15,11 +16,18 @@ fn match_words_character_class(input_line: &str) -> bool {
         .any(|ch| ch.is_alphanumeric() || ch == '_')
 }
 
+fn match_positive_character_group(input_line: &str, p: &str) -> bool {
+    input_line.contains(p)
+}
+
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     println!("{}", input_line);
     match pattern {
         "\\d" => match_digits_character_class(input_line),
         "\\w" => match_words_character_class(input_line),
+        p if p.starts_with("[") && p.ends_with("]") => {
+            match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+        }
         _ => input_line.contains(pattern),
     }
 }
