@@ -41,23 +41,27 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         }
     }
 
-    patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
-        let g = input_line.chars().collect::<Vec<char>>();
-        let maybe_proportional_char = g.get(i);
-        match maybe_proportional_char {
-            Some(ch) => match curr.as_str() {
-                "\\d" => ch.is_digit(10),
-                "\\w" => ch.is_alphanumeric(),
-                // p if p.starts_with("[^") && p.ends_with("]") => {
-                //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
-                // }
-                // p if p.starts_with("[") && p.ends_with("]") => {
-                //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-                // }
-                _ => input_line.contains(pattern),
-            },
-            None => false,
-        }
+    input_line.char_indices().fold(false, |_acc, (i, _ch)| {
+        let slice = &input_line[i..input_line.len()];
+
+        patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
+            let g = slice.chars().collect::<Vec<char>>();
+            let maybe_proportional_char = g.get(i);
+            match maybe_proportional_char {
+                Some(ch) => match curr.as_str() {
+                    "\\d" => return ch.is_digit(10),
+                    "\\w" => return ch.is_alphanumeric(),
+                    // p if p.starts_with("[^") && p.ends_with("]") => {
+                    //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+                    // }
+                    // p if p.starts_with("[") && p.ends_with("]") => {
+                    //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+                    // }
+                    _ => return input_line.contains(pattern),
+                },
+                None => return false,
+            }
+        })
     })
 
     // input_line.chars().enumerate().fold(false, |acc, (i, ch)| {
