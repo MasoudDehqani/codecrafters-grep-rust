@@ -2,26 +2,26 @@ use std::env;
 use std::io;
 use std::process;
 
-fn match_digits_character_class(input_line: &str) -> bool {
-    match input_line.parse::<i32>() {
-        Ok(_) => true,
-        Err(_) => false,
-    }
-}
+// fn match_digits_character_class(input_line: &str) -> bool {
+//     match input_line.parse::<i32>() {
+//         Ok(_) => true,
+//         Err(_) => false,
+//     }
+// }
 
-fn match_words_character_class(input_line: &str) -> bool {
-    input_line
-        .chars()
-        .any(|ch| ch.is_alphanumeric() || ch == '_')
-}
+// fn match_words_character_class(input_line: &str) -> bool {
+//     input_line
+//         .chars()
+//         .any(|ch| ch.is_alphanumeric() || ch == '_')
+// }
 
-fn match_positive_character_group(input_line: &str, p: &str) -> bool {
-    p.chars().any(|ch| input_line.contains(ch))
-}
+// fn match_positive_character_group(input_line: &str, p: &str) -> bool {
+//     p.chars().any(|ch| input_line.contains(ch))
+// }
 
-fn match_negative_character_group(input_line: &str, p: &str) -> bool {
-    p.chars().any(|ch| !input_line.contains(ch))
-}
+// fn match_negative_character_group(input_line: &str, p: &str) -> bool {
+//     p.chars().any(|ch| !input_line.contains(ch))
+// }
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     let mut patterns: Vec<String> = Vec::new();
@@ -41,61 +41,94 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         }
     }
 
-    input_line.char_indices().fold(false, |_acc, (i, _ch)| {
-        let slice = &input_line[i..input_line.len()];
+    let mut res = false;
 
-        let res = patterns.iter().enumerate().fold(false, |acc, (i, curr)| {
-            let g = slice.chars().collect::<Vec<char>>();
-            let maybe_proportional_char = g.get(i);
-            let pp = maybe_proportional_char.unwrap_or(&' ');
-            println!("{}, {}", pp, curr);
-            match maybe_proportional_char {
-                Some(ch) => match curr.as_str() {
-                    "\\d" => {
-                        // println!("IS DIGIT");
-                        ch.is_digit(10)
-                    }
-                    "\\w" => {
-                        // println!("IS ALPHANUMERIC");
-                        ch.is_alphanumeric()
-                    }
-                    // p if p.starts_with("[^") && p.ends_with("]") => {
-                    //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
-                    // }
-                    // p if p.starts_with("[") && p.ends_with("]") => {
-                    //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-                    // }
-                    _ => {
-                        // println!("{}", ch.to_string());
-                        // println!("{}", *curr);
-                        let res = ch.to_string() == *curr;
-                        println!("{}", res);
-                        res
-                    }
-                },
+    for i in 0..input_line.len() {
+        let slice = &input_line[i..];
 
-                None => acc,
+        if patterns.len() > slice.len() {
+            res = false;
+            break;
+        }
+
+        let i1 = slice.chars();
+        let i2 = patterns.iter();
+
+        let z = i1.zip(i2);
+
+        let r = z.fold(vec![], |acc, (ch, p)| {
+            println!("{:?}", acc);
+            match p.as_str() {
+                "\\d" => vec![acc, vec![ch.is_digit(10)]].concat(),
+                "\\w" => vec![acc, vec![ch.is_alphanumeric()]].concat(),
+                // p if p.starts_with("[^") && p.ends_with("]") => {
+                //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+                // }
+                // p if p.starts_with("[") && p.ends_with("]") => {
+                //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+                // }
+                _ => vec![acc, vec![ch.to_string() == *p]].concat(),
             }
         });
 
-        println!("{}", res);
-        res
-    })
+        // let r = patterns.iter().enumerate().fold(vec![], |acc, (i, curr)| {
+        //     let g = slice.chars().collect::<Vec<char>>();
+        //     let maybe_proportional_char = g.get(i);
+        //     match maybe_proportional_char {
+        //         Some(ch) => match curr.as_str() {
+        //             "\\d" => vec![ch.is_digit(10)],
+        //             "\\w" => vec![ch.is_alphanumeric()],
+        //             // p if p.starts_with("[^") && p.ends_with("]") => {
+        //             //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+        //             // }
+        //             // p if p.starts_with("[") && p.ends_with("]") => {
+        //             //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+        //             // }
+        //             _ => vec![ch.to_string() == *curr],
+        //         },
 
-    // input_line.chars().enumerate().fold(false, |acc, (i, ch)| {
-    //     let s: &char = &pattern.chars().nth(i).unwrap_or(' ');
-    //     match s {
-    //         "\\d" => match_digits_character_class(input_line),
-    //         "\\w" => match_words_character_class(input_line),
-    //         p if p.starts_with("[^") && p.ends_with("]") => {
-    //             match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
-    //         }
-    //         p if p.starts_with("[") && p.ends_with("]") => {
-    //             match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-    //         }
+        //         None => acc,
+        //     }
+        // });
 
-    //         _ => input_line.contains(pattern),
+        res = r.iter().all(|a| *a);
+
+        if res {
+            break;
+        }
+    }
+
+    res
+
+    // input_line.char_indices().fold(false, |acc, (i, _ch)| {
+    //     let slice = &input_line[i..input_line.len()];
+
+    //     let res = patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
+    //         let g = slice.chars().collect::<Vec<char>>();
+    //         let maybe_proportional_char = g.get(i);
+    //         match maybe_proportional_char {
+    //             Some(ch) => match curr.as_str() {
+    //                 "\\d" => ch.is_digit(10),
+    //                 "\\w" => ch.is_alphanumeric(),
+    //                 // p if p.starts_with("[^") && p.ends_with("]") => {
+    //                 //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+    //                 // }
+    //                 // p if p.starts_with("[") && p.ends_with("]") => {
+    //                 //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+    //                 // }
+    //                 _ => ch.to_string() == *curr,
+    //             },
+
+    //             None => acc,
+    //         }
+    //     });
+
+    //     if acc {
+    //         return acc;
     //     }
+
+    //     println!("{}", res);
+    //     res
     // })
 }
 
