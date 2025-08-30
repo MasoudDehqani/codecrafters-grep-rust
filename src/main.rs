@@ -4,7 +4,10 @@ use std::process;
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
     if pattern == "\\d" {
-        return input_line.contains(pattern);
+        match input_line.parse::<i32>() {
+            Ok(_) => true,
+            Err(_) => false,
+        }
     } else {
         panic!("Unhandled pattern: {}", pattern)
     }
