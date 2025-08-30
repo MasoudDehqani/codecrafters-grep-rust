@@ -2,13 +2,21 @@ use std::env;
 use std::io;
 use std::process;
 
+fn match_positive_character_group(input_line: &str, p: &str) -> bool {
+    p.chars().any(|ch| input_line.contains(ch))
+}
+
+fn match_negative_character_group(input_line: &str, p: &str) -> bool {
+    p.chars().any(|ch| !input_line.contains(ch))
+}
+
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
-    match pattern {
-        p if p.starts_with("[^") && p.ends_with("]") => {
-            return p.chars().any(|ch| !input_line.contains(ch))
+    match &pattern {
+        &p if p.starts_with("[^") && p.ends_with("]") => {
+            return match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
         }
-        p if p.starts_with("[") && p.ends_with("]") => {
-            return p.chars().any(|ch| input_line.contains(ch))
+        &p if p.starts_with("[") && p.ends_with("]") => {
+            return match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
         }
         _ => (),
     }
