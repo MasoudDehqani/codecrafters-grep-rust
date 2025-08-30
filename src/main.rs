@@ -44,18 +44,19 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
     input_line.char_indices().fold(false, |_acc, (i, _ch)| {
         let slice = &input_line[i..input_line.len()];
 
-        patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
+        let res = patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
             let g = slice.chars().collect::<Vec<char>>();
             let maybe_proportional_char = g.get(i);
-            println!("{}", curr.as_str());
+            let pp = maybe_proportional_char.unwrap_or(&' ');
+            println!("{}, {}", pp, curr);
             match maybe_proportional_char {
                 Some(ch) => match curr.as_str() {
                     "\\d" => {
-                        println!("IS DIGIT");
+                        // println!("IS DIGIT");
                         ch.is_digit(10)
                     }
                     "\\w" => {
-                        println!("IS ALPHANUMERIC");
+                        // println!("IS ALPHANUMERIC");
                         ch.is_alphanumeric()
                     }
                     // p if p.starts_with("[^") && p.ends_with("]") => {
@@ -64,11 +65,20 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
                     // p if p.starts_with("[") && p.ends_with("]") => {
                     //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
                     // }
-                    _ => ch.to_string() == *curr,
+                    _ => {
+                        // println!("{}", ch.to_string());
+                        // println!("{}", *curr);
+                        let res = ch.to_string() == *curr;
+                        println!("{}", res);
+                        res
+                    }
                 },
-                None => false,
+                None => true,
             }
-        })
+        });
+
+        println!("{}", res);
+        res
     })
 
     // input_line.chars().enumerate().fold(false, |acc, (i, ch)| {
@@ -105,8 +115,10 @@ fn main() {
 
     // Uncomment this block to pass the first stage
     if match_pattern(&input_line, &pattern) {
+        println!("0");
         process::exit(0)
     } else {
+        println!("1");
         process::exit(1)
     }
 }
