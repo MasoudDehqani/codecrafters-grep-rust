@@ -27,6 +27,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.starts_with("[") && p.ends_with("]") => {
             match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
         }
+
         _ => input_line.contains(pattern),
     }
 }
