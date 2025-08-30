@@ -47,17 +47,24 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
             let g = slice.chars().collect::<Vec<char>>();
             let maybe_proportional_char = g.get(i);
+            println!("{}", curr.as_str());
             match maybe_proportional_char {
                 Some(ch) => match curr.as_str() {
-                    "\\d" => ch.is_digit(10),
-                    "\\w" => ch.is_alphanumeric(),
+                    "\\d" => {
+                        println!("IS DIGIT");
+                        ch.is_digit(10)
+                    }
+                    "\\w" => {
+                        println!("IS ALPHANUMERIC");
+                        ch.is_alphanumeric()
+                    }
                     // p if p.starts_with("[^") && p.ends_with("]") => {
                     //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
                     // }
                     // p if p.starts_with("[") && p.ends_with("]") => {
                     //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
                     // }
-                    _ => slice.contains(pattern),
+                    _ => ch.to_string() == *curr,
                 },
                 None => false,
             }
