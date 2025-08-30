@@ -2,34 +2,13 @@ use std::env;
 use std::io;
 use std::process;
 
-// fn match_digits_character_class(input_line: &str) -> bool {
-//     match input_line.parse::<i32>() {
-//         Ok(_) => true,
-//         Err(_) => false,
-//     }
-// }
-
-// fn match_words_character_class(input_line: &str) -> bool {
-//     input_line
-//         .chars()
-//         .any(|ch| ch.is_alphanumeric() || ch == '_')
-// }
-
-fn match_positive_character_group(input_line: &str, p: &str) -> bool {
-    p.chars().any(|ch| input_line.contains(ch))
-}
-
-fn match_negative_character_group(input_line: &str, p: &str) -> bool {
-    p.chars().any(|ch| !input_line.contains(ch))
-}
-
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
-    match &pattern {
-        &p if p.starts_with("[^") && p.ends_with("]") => {
-            return match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+    match pattern {
+        p if p.starts_with("[^") && p.ends_with("]") => {
+            return p.chars().any(|ch| !input_line.contains(ch))
         }
-        &p if p.starts_with("[") && p.ends_with("]") => {
-            return match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
+        p if p.starts_with("[") && p.ends_with("]") => {
+            return p.chars().any(|ch| input_line.contains(ch))
         }
         _ => (),
     }
@@ -82,26 +61,6 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
             }
         });
 
-        // let r = patterns.iter().enumerate().fold(vec![], |acc, (i, curr)| {
-        //     let g = slice.chars().collect::<Vec<char>>();
-        //     let maybe_proportional_char = g.get(i);
-        //     match maybe_proportional_char {
-        //         Some(ch) => match curr.as_str() {
-        //             "\\d" => vec![ch.is_digit(10)],
-        //             "\\w" => vec![ch.is_alphanumeric()],
-        //             // p if p.starts_with("[^") && p.ends_with("]") => {
-        //             //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
-        //             // }
-        //             // p if p.starts_with("[") && p.ends_with("]") => {
-        //             //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-        //             // }
-        //             _ => vec![ch.to_string() == *curr],
-        //         },
-
-        //         None => acc,
-        //     }
-        // });
-
         res = r.iter().all(|a| *a);
 
         if res {
@@ -110,37 +69,6 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
     }
 
     res
-
-    // input_line.char_indices().fold(false, |acc, (i, _ch)| {
-    //     let slice = &input_line[i..input_line.len()];
-
-    //     let res = patterns.iter().enumerate().fold(false, |_acc, (i, curr)| {
-    //         let g = slice.chars().collect::<Vec<char>>();
-    //         let maybe_proportional_char = g.get(i);
-    //         match maybe_proportional_char {
-    //             Some(ch) => match curr.as_str() {
-    //                 "\\d" => ch.is_digit(10),
-    //                 "\\w" => ch.is_alphanumeric(),
-    //                 // p if p.starts_with("[^") && p.ends_with("]") => {
-    //                 //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
-    //                 // }
-    //                 // p if p.starts_with("[") && p.ends_with("]") => {
-    //                 //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-    //                 // }
-    //                 _ => ch.to_string() == *curr,
-    //             },
-
-    //             None => acc,
-    //         }
-    //     });
-
-    //     if acc {
-    //         return acc;
-    //     }
-
-    //     println!("{}", res);
-    //     res
-    // })
 }
 
 // Usage: echo <input_text> | your_program.sh -E <pattern>
@@ -160,10 +88,8 @@ fn main() {
 
     // Uncomment this block to pass the first stage
     if match_pattern(&input_line, &pattern) {
-        println!("0");
         process::exit(0)
     } else {
-        println!("1");
         process::exit(1)
     }
 }
