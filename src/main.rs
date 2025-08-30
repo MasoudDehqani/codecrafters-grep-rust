@@ -53,7 +53,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
 
     let mut res = false;
 
-    for i in 0..input_line.len() {
+    for (i, _ch) in input_line.char_indices() {
         let slice = &input_line[i..];
 
         if patterns.len() > slice.len() {
