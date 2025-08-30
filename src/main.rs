@@ -49,17 +49,17 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
             let maybe_proportional_char = g.get(i);
             match maybe_proportional_char {
                 Some(ch) => match curr.as_str() {
-                    "\\d" => return ch.is_digit(10),
-                    "\\w" => return ch.is_alphanumeric(),
+                    "\\d" => ch.is_digit(10),
+                    "\\w" => ch.is_alphanumeric(),
                     // p if p.starts_with("[^") && p.ends_with("]") => {
                     //     match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
                     // }
                     // p if p.starts_with("[") && p.ends_with("]") => {
                     //     match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
                     // }
-                    _ => return input_line.contains(pattern),
+                    _ => slice.contains(pattern),
                 },
-                None => return false,
+                None => false,
             }
         })
     })
