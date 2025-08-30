@@ -20,7 +20,7 @@ fn match_positive_character_group(input_line: &str, p: &str) -> bool {
 }
 
 fn match_negative_character_group(input_line: &str, p: &str) -> bool {
-    p.chars().any(|ch| !input_line.contains(ch))
+    !p.chars().all(|ch| input_line.contains(ch))
 }
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
