@@ -9,7 +9,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
             Err(_) => false,
         }
     } else {
-        false
+        input_line.contains(pattern)
     }
 }
 
