@@ -24,15 +24,14 @@ fn match_negative_character_group(input_line: &str, p: &str) -> bool {
 }
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
-    println!("{}", input_line);
     match pattern {
         "\\d" => match_digits_character_class(input_line),
         "\\w" => match_words_character_class(input_line),
-        p if p.starts_with("[") && p.ends_with("]") => {
-            match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
-        }
         p if p.starts_with("[^") && p.ends_with("]") => {
             match_negative_character_group(input_line, p.trim_matches(&['[', '^', ']']))
+        }
+        p if p.starts_with("[") && p.ends_with("]") => {
+            match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
         }
 
         _ => input_line.contains(pattern),
