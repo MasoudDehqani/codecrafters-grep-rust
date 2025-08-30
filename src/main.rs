@@ -16,7 +16,7 @@ fn match_words_character_class(input_line: &str) -> bool {
 }
 
 fn match_positive_character_group(input_line: &str, p: &str) -> bool {
-    input_line.contains(p)
+    p.chars().any(|ch| input_line.contains(ch))
 }
 
 fn match_pattern(input_line: &str, pattern: &str) -> bool {
