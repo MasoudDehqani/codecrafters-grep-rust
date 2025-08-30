@@ -57,7 +57,6 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         let z = i1.zip(i2);
 
         let r = z.fold(vec![], |acc, (ch, p)| {
-            println!("{:?}", acc);
             match p.as_str() {
                 "\\d" => vec![acc, vec![ch.is_digit(10)]].concat(),
                 "\\w" => vec![acc, vec![ch.is_alphanumeric()]].concat(),
