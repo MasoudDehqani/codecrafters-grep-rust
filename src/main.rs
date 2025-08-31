@@ -27,9 +27,21 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.contains("+") => match p.find("+") {
             Some(i) => {
                 let (m, n) = p.split_at(i);
-                println!("{}", m);
-                println!("{}", n.trim_start_matches("+"));
-                return input_line.starts_with(m) && n.contains(n.trim_start_matches("+"));
+                // println!("{}", m);
+                // println!("{}", n.trim_start_matches("+"));
+                println!("{}", n);
+                // let (t, _) = p.split_at(i + 1);
+                // println!("{}", t);
+                // println!("{}", input_line.strip_prefix(t).unwrap_or(""));
+                // println!("{:?}", input_line.split_once(t).unwrap_or(("", "")));
+                // let last_of_first_split = m.chars().last().unwrap_or(char::default());
+                let te = input_line
+                    .rfind(n.trim_start_matches("+"))
+                    .unwrap_or_default();
+                println!("{:?}", te);
+                let (_, tar) = input_line.split_at(te);
+                println!("{}", tar);
+                return input_line.starts_with(m) && tar.starts_with(n.trim_start_matches("+"));
             }
             None => (),
         },
