@@ -18,7 +18,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.starts_with("[") && p.ends_with("]") => {
             return match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
         }
-        p if p.starts_with("^") => return input_line.starts_with(pattern),
+        p if p.starts_with("^") => return input_line.starts_with(pattern.trim_start_matches("^")),
         _ => (),
     }
 
