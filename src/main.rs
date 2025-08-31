@@ -26,9 +26,9 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.ends_with("$") => return input_line.ends_with(pattern.trim_end_matches("$")),
         p if p.contains("+") => match p.find("+") {
             Some(i) => {
-                let (m, _) = p.split_at(i);
+                let (m, n) = p.split_at(i);
                 println!("{}", m);
-                return input_line.contains(m);
+                return input_line.contains(m) && input_line.ends_with(n);
             }
             None => (),
         },
