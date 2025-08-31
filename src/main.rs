@@ -44,10 +44,12 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
                 let separator_index = input_line.rfind(simple_pat).unwrap_or_default();
                 let (input_first_part, input_second_part) = input_line.split_at(separator_index);
 
-                return (input_line.starts_with(pat_with_option)
-                    && input_first_part.ends_with(target_char))
-                    || input_line.starts_with(pat_with_option)
-                        && input_second_part.starts_with(simple_pat);
+                // return (input_line.starts_with(pat_with_option)
+                //     && input_first_part.ends_with(target_char))
+                //     || input_line.starts_with(pat_with_option)
+                //         && input_second_part.starts_with(simple_pat);
+
+                return input_second_part.starts_with(simple_pat);
             }
             None => (),
         },
