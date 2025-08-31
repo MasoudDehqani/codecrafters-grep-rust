@@ -1,6 +1,5 @@
 use std::env;
 use std::io;
-use std::ops::Index;
 use std::process;
 
 fn match_positive_character_group(input_line: &str, p: &str) -> bool {
@@ -28,6 +27,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.contains("+") => match p.find("+") {
             Some(i) => {
                 let (m, _) = p.split_at(i);
+                println!("{}", m);
                 return input_line.contains(m);
             }
             None => (),
