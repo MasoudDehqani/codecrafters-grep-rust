@@ -19,6 +19,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
             return match_positive_character_group(input_line, p.trim_matches(&['[', ']']))
         }
         p if p.starts_with("^") => return input_line.starts_with(pattern.trim_start_matches("^")),
+        p if p.ends_with("$") => return input_line.ends_with(pattern.trim_end_matches("$")),
         _ => (),
     }
 
