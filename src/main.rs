@@ -28,8 +28,8 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
             Some(i) => {
                 let (m, n) = p.split_at(i);
                 println!("{}", m);
-                println!("{}", n);
-                return input_line.contains(m) && input_line.ends_with(n.trim_start_matches("+"));
+                println!("{}", n.trim_start_matches("+"));
+                return input_line.starts_with(m) && n.contains(n.trim_start_matches("+"));
             }
             None => (),
         },
