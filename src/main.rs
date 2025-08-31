@@ -38,16 +38,10 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         },
         p if p.contains("?") => match p.find("?") {
             Some(i) => {
-                let (pat_with_option, simple_pat) = p.split_at(i);
+                let (_pat_with_option, simple_pat) = p.split_at(i);
                 let simple_pat = simple_pat.trim_start_matches("?");
-                let target_char = pat_with_option.chars().last().unwrap_or(char::default());
                 let separator_index = input_line.rfind(simple_pat).unwrap_or_default();
-                let (input_first_part, input_second_part) = input_line.split_at(separator_index);
-
-                // return (input_line.starts_with(pat_with_option)
-                //     && input_first_part.ends_with(target_char))
-                //     || input_line.starts_with(pat_with_option)
-                //         && input_second_part.starts_with(simple_pat);
+                let (_, input_second_part) = input_line.split_at(separator_index);
 
                 return input_second_part.starts_with(simple_pat);
             }
