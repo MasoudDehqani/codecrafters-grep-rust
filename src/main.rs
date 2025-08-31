@@ -26,22 +26,13 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.ends_with("$") => return input_line.ends_with(pattern.trim_end_matches("$")),
         p if p.contains("+") => match p.find("+") {
             Some(i) => {
-                let (m, n) = p.split_at(i);
-                // println!("{}", m);
-                // println!("{}", n.trim_start_matches("+"));
-                println!("{}", n);
-                // let (t, _) = p.split_at(i + 1);
-                // println!("{}", t);
-                // println!("{}", input_line.strip_prefix(t).unwrap_or(""));
-                // println!("{:?}", input_line.split_once(t).unwrap_or(("", "")));
-                // let last_of_first_split = m.chars().last().unwrap_or(char::default());
-                let te = input_line
-                    .rfind(n.trim_start_matches("+"))
-                    .unwrap_or_default();
-                println!("{:?}", te);
-                let (_, tar) = input_line.split_at(te);
-                println!("{}", tar);
-                return input_line.starts_with(m) && tar.starts_with(n.trim_start_matches("+"));
+                let (pat_with_repeat, simple_pat) = p.split_at(i);
+                let simple_pat = simple_pat.trim_start_matches("+");
+                let separator_index = input_line.rfind(simple_pat).unwrap_or_default();
+                let (_, input_second_part) = input_line.split_at(separator_index);
+
+                return input_line.starts_with(pat_with_repeat)
+                    && input_second_part.starts_with(simple_pat);
             }
             None => (),
         },
