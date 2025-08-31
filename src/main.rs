@@ -20,8 +20,7 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         }
         p if p.starts_with("^") && p.ends_with("$") => {
             let trimmed_pattern = pattern.trim_matches(&['^', '$']);
-            return input_line.starts_with(trimmed_pattern)
-                && input_line.ends_with(trimmed_pattern);
+            return input_line == trimmed_pattern;
         }
         p if p.starts_with("^") => return input_line.starts_with(pattern.trim_start_matches("^")),
         p if p.ends_with("$") => return input_line.ends_with(pattern.trim_end_matches("$")),
