@@ -58,6 +58,18 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
 
             return matches.iter().all(|b| *b);
         }
+        p if p.starts_with("(") && p.ends_with(")") && p.contains("|") => {
+            let trimmed_pat = p.trim_matches(&['(', ')']);
+            match p.find("|") {
+                Some(i) => {
+                    let (f, s) = trimmed_pat.split_at(i);
+                    let f = f.trim_end_matches("|");
+
+                    return input_line == f || input_line == s;
+                }
+                None => (),
+            }
+        }
         _ => (),
     }
 
