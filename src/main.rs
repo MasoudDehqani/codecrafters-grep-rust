@@ -27,11 +27,11 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
         p if p.contains("+") => match p.find("+") {
             Some(i) => {
                 let (pat_with_repeat, simple_pat) = p.split_at(i);
-                let simple_pat = simple_pat.trim_start_matches("+");
+                let simple_pat = simple_pat.trim_start_matches(&['+', '.']);
                 let separator_index = input_line.rfind(simple_pat).unwrap_or_default();
                 let (_, input_second_part) = input_line.split_at(separator_index);
 
-                return input_line.starts_with(pat_with_repeat)
+                return input_line.starts_with(pat_with_repeat.trim_end_matches(&['.', '+']))
                     && input_second_part.starts_with(simple_pat);
             }
             None => (),
