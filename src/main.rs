@@ -2,6 +2,36 @@ use std::env;
 use std::io;
 use std::process;
 
+#[derive(Debug)]
+enum Patterns<'a> {
+    Exact(&'a str),
+    Or(Vec<&'a str>),
+}
+
+impl<'a> Patterns<'a> {
+    fn is_match(&self, target: &str) -> bool {
+        match self {
+            Self::Exact(s) => **s == *target,
+            Self::Or(pats) => pats.iter().any(|p| **p == *target),
+        }
+    }
+
+    fn from(s: &'a str) -> Vec<Patterns<'a>> {
+        s.split(&['(', ')'])
+            .filter(|ch| !ch.is_empty())
+            .map(|s| {
+                if s.contains("|") {
+                    let pats: Vec<_> = s.split("|").collect();
+
+                    Patterns::Or(pats)
+                } else {
+                    Patterns::Exact(s)
+                }
+            })
+            .collect()
+    }
+}
+
 fn match_positive_character_group(input_line: &str, p: &str) -> bool {
     p.chars().any(|ch| input_line.contains(ch))
 }
@@ -58,17 +88,20 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
 
             return matches.iter().all(|b| *b);
         }
-        p if p.starts_with("(") && p.ends_with(")") && p.contains("|") => {
-            let trimmed_pat = p.trim_matches(&['(', ')']);
-            match p.find("|") {
-                Some(i) => {
-                    let (f, s) = trimmed_pat.split_at(i);
-                    let f = f.trim_end_matches("|");
+        p if p.contains("|") => {
+            let patterns: Vec<_> = Patterns::from(pattern);
 
-                    return input_line == f || input_line == s;
+            let mut is_match = false;
+            for (i, _char) in input_line.char_indices() {
+                let slice = &input_line[i..];
+                patterns.iter().for_each(|p| is_match = p.is_match(slice));
+
+                if is_match {
+                    break;
                 }
-                None => (),
             }
+
+            return is_match;
         }
         _ => (),
     }
