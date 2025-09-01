@@ -47,6 +47,17 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
             }
             None => (),
         },
+        p if p.contains(".") => {
+            let matches =
+                input_line
+                    .char_indices()
+                    .fold(vec![], |acc, (i, curr)| match p.chars().nth(i) {
+                        Some(c) => vec![acc, vec![curr == c || c == '.']].concat(),
+                        None => vec![acc, vec![false]].concat(),
+                    });
+
+            return matches.iter().all(|b| *b);
+        }
         _ => (),
     }
 
