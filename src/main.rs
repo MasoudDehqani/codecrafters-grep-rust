@@ -29,9 +29,17 @@ fn match_pattern(input_line: &str, pattern: &str) -> bool {
                 let (pat_with_repeat, simple_pat) = p.split_at(i);
                 let simple_pat = simple_pat.trim_start_matches(&['+', '.']);
                 let separator_index = input_line.rfind(simple_pat).unwrap_or_default();
-                let (_, input_second_part) = input_line.split_at(separator_index);
+                let (input_first_part, input_second_part) = input_line.split_at(separator_index);
+                println!("input_line: {input_line}");
+                println!(
+                    "pat_first_part: {}",
+                    pat_with_repeat.trim_end_matches(&['.', '+'])
+                );
+                println!("simple_pat: {simple_pat}");
+                println!("input_first_part: {}", input_first_part);
+                println!("input_second_part: {}", input_second_part);
 
-                return input_line.starts_with(pat_with_repeat.trim_end_matches(&['.', '+']))
+                return input_first_part.starts_with(pat_with_repeat.trim_end_matches(&['.', '+']))
                     && input_second_part.starts_with(simple_pat);
             }
             None => (),
